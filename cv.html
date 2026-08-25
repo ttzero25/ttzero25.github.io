@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV — teo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <a class="brand" href="/"><span class="dot"></span>teo</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/blog.html">blog</a>
+      <a href="/cv.html" class="active">cv</a>
+      <a href="mailto:teo0studio@gmail.com">contact</a>
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+    </div>
+  </nav>
+</header>
+<main>
+  <section style="text-align:center;padding:96px 0">
+    <div class="eyebrow" style="justify-content:center">cv</div>
+    <h1>Coming soon</h1>
+    <p class="lead" style="margin-top:12px">CV is currently being prepared.</p>
+  </section>
+</main>
+<footer>
+  <span class="foot-note">© 2026 teo · built for coordinated disclosure</span>
+  <span class="foot-note">ttzero25.github.io</span>
+</footer>
+<script>
+  (function(){var r=document.documentElement,k='teo-theme',s=null;try{s=localStorage.getItem(k)}catch(e){}if(s)r.setAttribute('data-theme',s);
+    function cur(){var t=r.getAttribute('data-theme');return t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}
+    document.getElementById('themeToggle').addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem(k,n)}catch(e){}});
+  })();
+</script>
+</body>
+</html>

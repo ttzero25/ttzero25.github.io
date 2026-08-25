@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>teo — Security Research · Vulnerability Hunting</title>
+<meta name="description" content="teo (ttzero25) — Open-source vulnerability research & CTF. CVEs, projects, and activities.">
+<meta property="og:title" content="teo — Security Research · Vulnerability Hunting">
+<meta property="og:description" content="Open-source vulnerability research & CTF. CVEs, projects, and activities.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --surface:#f7f8f9;
+    --surface-2:#f1f2f4;
+    --text:#18181b;
+    --muted:#6b7280;
+    --faint:#9ca3af;
+    --border:#e6e7eb;
+    --accent:#15a34a;
+    --accent-soft:rgba(21,163,74,.10);
+    --shadow:0 1px 2px rgba(24,24,27,.04),0 4px 16px rgba(24,24,27,.05);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0b0b0d;
+    --surface:#141417;
+    --surface-2:#1a1a1e;
+    --text:#ededf0;
+    --muted:#9ca0aa;
+    --faint:#6b7078;
+    --border:#26262c;
+    --accent:#4ade80;
+    --accent-soft:rgba(74,222,128,.10);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 20px rgba(0,0,0,.35);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0b0b0d;
+      --surface:#141417;
+      --surface-2:#1a1a1e;
+      --text:#ededf0;
+      --muted:#9ca0aa;
+      --faint:#6b7078;
+      --border:#26262c;
+      --accent:#4ade80;
+      --accent-soft:rgba(74,222,128,.10);
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 20px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    line-height:1.68;
+    font-size:14.5px;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  ::selection{background:var(--accent-soft);color:var(--text)}
+  .mono{font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace}
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:saturate(180%) blur(12px);
+    background:color-mix(in srgb,var(--bg) 80%,transparent);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{
+    max-width:720px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .brand{font-weight:600;letter-spacing:-.01em;font-size:15px;display:flex;align-items:center;gap:8px}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .nav-links{display:flex;gap:20px;align-items:center;font-size:13.5px}
+  .nav-links a{color:var(--muted);transition:color .15s}
+  .nav-links a:hover{color:var(--text)}
+  .theme-btn{
+    border:1px solid var(--border);background:var(--surface);color:var(--muted);
+    width:34px;height:34px;border-radius:9px;cursor:pointer;display:grid;place-items:center;
+    transition:.15s;font-size:15px;
+  }
+  .theme-btn:hover{color:var(--text);border-color:var(--faint)}
+  @media(max-width:560px){.nav-links a:not(.hide-sm){display:none}}
+
+  /* ---------- layout ---------- */
+  main{max-width:720px;margin:0 auto;padding:0 24px}
+  section{padding:52px 0;border-bottom:1px solid var(--border)}
+  section:last-of-type{border-bottom:none}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;
+    color:var(--accent);letter-spacing:.02em;margin-bottom:18px;display:flex;align-items:center;gap:8px;
+  }
+  .eyebrow::before{content:"//";opacity:.5}
+  h1{font-size:clamp(25px,5vw,33px);font-weight:700;letter-spacing:-.03em;line-height:1.15}
+  h2{font-size:20px;font-weight:600;letter-spacing:-.02em;margin-bottom:6px}
+  p{color:var(--text)}
+  .lead{color:var(--muted);font-size:14.5px}
+
+  /* ---------- hero ---------- */
+  .hero{padding-top:64px;padding-bottom:56px}
+  .hero h1{margin-bottom:16px}
+  .hero .role{color:var(--accent);font-weight:600}
+  .hero-desc{color:var(--muted);font-size:15px;max-width:560px;margin-bottom:26px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:8px 10px;margin-bottom:30px}
+  .chip{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+    background:var(--surface);border:1px solid var(--border);
+    padding:5px 11px;border-radius:100px;
+  }
+  .chip b{color:var(--accent);font-weight:600}
+  .cta{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:14px;font-weight:500;padding:9px 16px;border-radius:10px;
+    border:1px solid var(--border);background:var(--surface);color:var(--text);
+    transition:.15s;
+  }
+  .btn:hover{border-color:var(--faint);transform:translateY(-1px)}
+  .btn.primary{background:var(--accent);color:#062611;border-color:transparent}
+  :root[data-theme="dark"] .btn.primary{color:#052e16}
+  .btn.primary:hover{filter:brightness(1.05)}
+  .btn.icon-btn{padding:0;width:40px;height:40px;justify-content:center;gap:0}
+  .btn.icon-btn .i{width:18px;height:18px}
+
+  /* ---------- prose ---------- */
+  .prose p{margin-bottom:16px;color:var(--muted)}
+  .prose p strong{color:var(--text);font-weight:600}
+  .prose a.link{color:var(--text);border-bottom:1px solid var(--accent);transition:.15s;font-weight:500}
+  .prose a.link:hover{background:var(--accent-soft)}
+
+  /* ---------- cve cards ---------- */
+  .cards{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+  .card{
+    display:block;background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:0;transition:border-color .18s,box-shadow .18s;position:relative;overflow:hidden;
+  }
+  .card:hover{border-color:var(--faint)}
+  .card[open]{box-shadow:var(--shadow)}
+  .card>summary{
+    list-style:none;cursor:pointer;padding:17px 22px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .card>summary::-webkit-details-marker{display:none}
+  .card>summary:focus-visible{outline:2px solid var(--sevc,var(--accent));outline-offset:-2px;border-radius:14px}
+  .card .sum-main{min-width:0}
+  .card .chev{
+    color:var(--faint);font-size:20px;line-height:1;flex-shrink:0;
+    transition:transform .2s;transform:rotate(0deg);
+  }
+  .card[open] .chev{transform:rotate(90deg);color:var(--sevc,var(--accent))}
+  .card-body{padding:0 22px 20px;animation:fade .22s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  a.card.link-card{padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  a.card.link-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  a.card.link-card .chev{transition:transform .18s,color .18s}
+  a.card.link-card:hover .chev{transform:translate(3px,-3px);color:var(--sevc,var(--accent))}
+  .card.award-card{padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .card.award-card .medal{font-size:22px;line-height:1;flex-shrink:0}
+  .card::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sevc,var(--accent));
+    opacity:.9;
+  }
+  /* severity color system */
+  .card.sv-crit{--sevc:#dc2626;--sevbg:rgba(220,38,38,.12)}
+  .card.sv-high{--sevc:#ea580c;--sevbg:rgba(234,88,12,.12)}
+  .card.sv-med {--sevc:#ca8a04;--sevbg:rgba(202,138,4,.15)}
+  .card.sv-low {--sevc:#2563eb;--sevbg:rgba(37,99,235,.12)}
+  .card.sv-na  {--sevc:#6b7280;--sevbg:rgba(107,114,128,.13)}
+  .card.sv-brand{--sevc:var(--accent);--sevbg:var(--accent-soft)}
+  .card.sv-award{--sevc:#7c3aed;--sevbg:rgba(124,58,237,.13)}
+  :root[data-theme="dark"] .card.sv-award{--sevc:#a78bfa}
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .card.sv-award{--sevc:#a78bfa}}
+  :root[data-theme="dark"] .card.sv-na  {--sevc:#9ca3af}
+  :root[data-theme="dark"] .card.sv-crit{--sevc:#f87171}
+  :root[data-theme="dark"] .card.sv-high{--sevc:#fb923c}
+  :root[data-theme="dark"] .card.sv-med {--sevc:#fbbf24}
+  :root[data-theme="dark"] .card.sv-low {--sevc:#60a5fa}
+  @media(prefers-color-scheme:dark){
+    :root:not([data-theme="light"]) .card.sv-crit{--sevc:#f87171}
+    :root:not([data-theme="light"]) .card.sv-high{--sevc:#fb923c}
+    :root:not([data-theme="light"]) .card.sv-med {--sevc:#fbbf24}
+    :root:not([data-theme="light"]) .card.sv-low {--sevc:#60a5fa}
+    :root:not([data-theme="light"]) .card.sv-na  {--sevc:#9ca3af}
+  }
+  .sev-pill{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.04em;
+    padding:2px 9px;border-radius:6px;text-transform:uppercase;white-space:nowrap;
+    background:var(--sevbg);color:var(--sevc);border:1px solid color-mix(in srgb,var(--sevc) 30%,transparent);
+  }
+  .card-top{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:9px}
+  .cve-id{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--sevc,var(--accent))}
+  .badge{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.03em;
+    padding:2px 8px;border-radius:6px;text-transform:uppercase;
+  }
+  .badge.pub{background:var(--accent-soft);color:var(--accent)}
+  .badge.acc{background:rgba(234,179,8,.14);color:#a67c00}
+  :root[data-theme="dark"] .badge.acc{color:#fbbf24}
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .badge.acc{color:#fbbf24}}
+  .badge.sev{background:var(--surface-2);color:var(--muted)}
+  .card h3{font-size:15px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
+  .card .desc{font-size:14px;color:var(--muted);line-height:1.6}
+  .card .tgt{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);margin-top:12px;word-break:break-word}
+  .card>summary h3{margin-bottom:0}
+  .adv-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .adv-links a{
+    font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;
+    color:var(--sevc,var(--accent));background:var(--sevbg,var(--accent-soft));
+    border:1px solid color-mix(in srgb,var(--sevc,var(--accent)) 26%,transparent);
+    padding:6px 12px;border-radius:8px;transition:.15s;
+  }
+  .adv-links a:hover{filter:brightness(1.06);transform:translateY(-1px)}
+
+  /* ---------- project list ---------- */
+  .proj{display:flex;flex-direction:column;gap:2px}
+  .proj-item{
+    display:flex;gap:16px;padding:18px 0;border-top:1px solid var(--border);align-items:flex-start;
+  }
+  .proj-item:first-child{border-top:none}
+  .proj-idx{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);padding-top:3px;min-width:24px}
+  .proj-body{flex:1}
+  .proj-body h3{font-size:15px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .proj-body h3 .tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:2px 7px;border-radius:6px}
+  .proj-body p{font-size:14px;color:var(--muted);line-height:1.6}
+  .proj-body a.gh{font-size:13px;color:var(--accent);font-family:'JetBrains Mono',monospace;display:inline-block;margin-top:6px}
+  .proj-body a.gh:hover{text-decoration:underline}
+  .talk-meta{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);margin-top:8px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+  .talk-meta .ev{color:var(--accent);font-weight:500}
+  .talk-meta .sep{color:var(--border)}
+
+  /* ---------- stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 16px;text-align:center}
+  .stat .num{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--text);line-height:1}
+  .stat .num span{color:var(--accent)}
+  .stat .lbl{font-size:12px;color:var(--muted);margin-top:8px}
+  @media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:span 2}}
+
+  /* ---------- footer ---------- */
+  footer{max-width:720px;margin:0 auto;padding:44px 24px 60px}
+  .foot-inner{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center}
+  .foot-links{display:flex;gap:8px;flex-wrap:wrap}
+  .foot-links a{
+    display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);
+    border:1px solid var(--border);background:var(--surface);padding:8px 14px;border-radius:10px;transition:.15s;
+  }
+  .foot-links a:hover{color:var(--text);border-color:var(--faint)}
+  .foot-note{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--faint)}
+  svg.i{width:15px;height:15px;fill:currentColor;flex-shrink:0}
+</style>
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <a class="brand" href="#top"><span class="dot"></span>teo</a>
+    <div class="nav-links">
+      <a href="#top">Home</a>
+      <a href="/blog.html">blog</a>
+      <a href="/cv.html">cv</a>
+      <a href="mailto:teo0studio@gmail.com">contact</a>
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="top" style="border-bottom:1px solid var(--border)">
+    <div class="eyebrow">whoami</div>
+    <h1>Taeyoung Jeong<span style="color:var(--accent)">.</span></h1>
+    <p class="mono" style="color:var(--muted);font-size:14px;margin:-6px 0 22px;letter-spacing:.01em">@teo</p>
+    <p class="hero-desc">Hi, I'm <strong style="color:var(--text);font-weight:600">Taeyoung Jeong</strong> (@teo).</p>
+    <div class="cta">
+      <a class="btn icon-btn" href="https://github.com/ttzero25" target="_blank" rel="noopener" aria-label="GitHub" title="github.com/ttzero25">
+        <svg class="i" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      </a>
+      <a class="btn icon-btn" href="mailto:teo0studio@gmail.com" aria-label="Email" title="teo0studio@gmail.com">
+        <svg class="i" viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="eyebrow">education</div>
+    <div class="proj">
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:64px">2023—</div>
+        <div class="proj-body">
+          <h3>Soongsil University</h3>
+          <p>B.S. in AI Software · 2023 – present</p>
+          <p style="margin-top:6px"><span style="color:var(--accent)">•</span> Convergence Major in Information Security</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="eyebrow">experience</div>
+    <div class="proj">
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:70px">2026—</div>
+        <div class="proj-body">
+          <h3>Communications System Security Lab</h3>
+          <p>Undergraduate Researcher · Jan 5, 2026 – present</p>
+          <p style="margin-top:6px"><span style="color:var(--accent)">•</span> Penetration testing of two mobile apps for an undisclosed corporate client.</p>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:70px">2026—</div>
+        <div class="proj-body">
+          <h3>First Mind — Security Education Platform</h3>
+          <p>Content Review Team · 2026 – present</p>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:70px">2025</div>
+        <div class="proj-body">
+          <h3>개인정보 불법유통 대응 대학생 모니터링단</h3>
+          <p>개인정보보호위원회 · KISA 한국인터넷진흥원 · Jul 18 – Dec 22, 2025</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ADVISORIES -->
+  <section id="advisories">
+    <div class="eyebrow">security advisories</div>
+    <div class="cards">
+
+      <details class="card sv-high">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">CVE-2026-62336</span>
+              <span class="sev-pill">High · 8.5</span>
+            </div>
+            <h3>qbee-agent — local privilege escalation &amp; arbitrary file tampering via symlink following</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">Improper symlink handling in qbee-agent's <span class="mono">createFile</span> helper lets an
+            unprivileged user escalate to root — e.g. replacing their <span class="mono">.ssh</span> directory with a
+            symlink to <span class="mono">/root/.ssh</span> for root SSH access, corrupting system files during RAUC
+            staging, or redirecting file-distribution writes to seize ownership. (CWE-59 / CWE-22 / CWE-367)</p>
+          <div class="tgt mono">qbee-io/qbee-agent · &lt; 2026.27 → patched 2026.27 · CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H</div>
+          <div class="adv-links">
+            <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-62336" target="_blank" rel="noopener">NVD ↗</a>
+            <a href="https://github.com/qbee-io/qbee-agent/security/advisories/GHSA-xhv5-8fpq-g7hf" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-high">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">CVE-2026-65016</span>
+              <span class="sev-pill">High · 7.7</span>
+            </div>
+            <h3>n8n — SSO instance-role provisioning privilege escalation to instance owner</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">n8n's Enterprise SSO fails to block assignment of the <span class="mono">global:owner</span>
+            role through instance-role provisioning. With <span class="mono">N8N_SSO_SCOPES_PROVISION_INSTANCE_ROLE</span>
+            enabled, an SSO user whose IdP-supplied instance-role claim maps to <span class="mono">global:owner</span>
+            gains full instance-owner access — a capability explicitly blocked on the token-exchange path.</p>
+          <div class="tgt mono">n8n-io/n8n · &lt; 2.30.1 / 2.29.8 / 1.123.64 · CVSS:4.0/AV:N/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H</div>
+          <div class="adv-links">
+            <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-65016" target="_blank" rel="noopener">NVD ↗</a>
+            <a href="https://github.com/n8n-io/n8n/security/advisories/GHSA-35q8-9mj6-wjmf" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-high">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">CVE-2026-65981</span>
+              <span class="sev-pill">High · 7.1</span>
+            </div>
+            <h3>coturn — MOBILITY-TICKET session-resume authorization bypass</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">On the ICE-mobility session-resume path, credential adoption is skipped when the
+            attacker's session is already authenticated, so ownership of the victim's allocation is never
+            re-validated — enabling cross-user takeover of an active TURN allocation. Found via an
+            auth-layer ↔ handler asymmetry in the STUN attribute view, then confirmed dynamically.</p>
+          <div class="tgt mono">coturn/coturn · ≤ 4.14.0 → patched 4.15.0 · CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:L</div>
+          <div class="adv-links">
+            <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-65981" target="_blank" rel="noopener">NVD ↗</a>
+            <a href="https://github.com/coturn/coturn/security/advisories/GHSA-69wx-x7x6-pjj8" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-med">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">CVE-2026-55828</span>
+              <span class="sev-pill">Medium · 6.0</span>
+            </div>
+            <h3>qbee transport — symlink-chain path traversal in tar extraction</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">The <span class="mono">go.qbee.io/transport</span> tar-extraction routine validates paths
+            lexically but follows symlinks created during extraction, letting an attacker write a file one level
+            above the destination. Reached through qbee-agent running as root, it yields unauthorized
+            root-level file writes outside the target directory. (CWE-22 / CWE-59)</p>
+          <div class="tgt mono">go.qbee.io/transport · &lt; v1.26.27 → patched v1.26.27 · CVSS:4.0/AV:N/AC:H/AT:P/PR:L/UI:N/VC:N/VI:H/VA:L</div>
+          <div class="adv-links">
+            <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-55828" target="_blank" rel="noopener">NVD ↗</a>
+            <a href="https://github.com/qbee-io/transport/security/advisories/GHSA-f9m7-vc86-p6jj" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-med">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">CVE-2026-71325</span>
+              <span class="sev-pill">Medium · 4.8</span>
+            </div>
+            <h3>Traefik — <span class="mono">allowCrossNamespace=false</span> bypass via <span class="mono">@kubernetescrd</span></h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">A tenant restricted to a single namespace can reference another namespace's
+            TraefikService through the <span class="mono">@kubernetescrd</span> provider's backendRef,
+            defeating the intended cross-namespace isolation. An unpatched sibling of the earlier
+            CVE-2026-41174 / 54761 fixes.</p>
+          <div class="tgt mono">traefik/traefik · ≤ 3.7.9 → patched 3.7.10 / 3.6.25 / 2.11.54 · CVSS:4.0/AV:L/AC:L/PR:L/UI:N/VC:L/VI:L/SC:L/SI:L</div>
+          <div class="adv-links">
+            <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-71325" target="_blank" rel="noopener">NVD ↗</a>
+            <a href="https://github.com/traefik/traefik/security/advisories/GHSA-62fc-8686-hfmq" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- HALL OF FAME & AWARDS -->
+  <section id="hall-of-fame">
+    <div class="eyebrow">hall of fame &amp; awards</div>
+    <div class="cards">
+
+      <a class="card sv-brand link-card" href="https://docs.qbee.io/security-vulnerability-disclosure-policy.html" target="_blank" rel="noopener">
+        <div class="sum-main">
+          <div class="card-top">
+            <span class="cve-id">qbee.io</span>
+            <span class="sev-pill">Hall of Fame</span>
+          </div>
+          <h3>Credited for 3 responsibly-disclosed vulnerabilities in qbee</h3>
+          <div class="talk-meta">
+            <span>CVE-2026-62336 · qbee-agent LPE</span><span class="sep">·</span>
+            <span>CVE-2026-55828 · transport path traversal</span><span class="sep">·</span>
+            <span>Terraform secret exposure</span>
+          </div>
+        </div>
+        <span class="chev">↗</span>
+      </a>
+
+      <div class="card sv-award award-card">
+        <div class="sum-main">
+          <div class="card-top">
+            <span class="cve-id">Award · 우수</span>
+          </div>
+          <h3>2025 개인정보 불법유통 대응 대학생 모니터링단</h3>
+          <div class="talk-meta">
+            <span>개인정보보호위원회 · KISA 한국인터넷진흥원</span>
+            <span class="sep">·</span>
+            <span>Dec 22, 2025</span>
+          </div>
+        </div>
+        <span class="medal">🏅</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="eyebrow">projects</div>
+    <div class="proj">
+
+      <div class="proj-item">
+        <div class="proj-idx">01</div>
+        <div class="proj-body">
+          <h3>DeepSealer <span class="tag">0-day agent</span></h3>
+          <p>An LLM-based 0-day vulnerability detection agent. A 3-stage, 4-agent pipeline
+            (recon → analysis → verification) that scans open-source codebases and produces
+            confirmed findings as GHSA-formatted English reports.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SPEAKER -->
+  <section id="speaker">
+    <div class="eyebrow">speaker</div>
+    <div class="proj">
+
+      <div class="proj-item">
+        <div class="proj-idx">01</div>
+        <div class="proj-body">
+          <h3>AI for Security for AI</h3>
+          <p>AI 에이전트로 AI 에이전트 해킹하기</p>
+          <div class="talk-meta">
+            <span class="ev">HackingCamp 33rd</span>
+            <span class="sep">·</span>
+            <span>Aug 23, 2026</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ETC -->
+  <section id="etc" style="border-bottom:none">
+    <div class="eyebrow">etc</div>
+    <div class="proj">
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:70px">2024</div>
+        <div class="proj-body">
+          <h3>제64대 중앙운영위원회 위원</h3>
+          <p>숭실대학교 · Jan 1 – Jun 30, 2024</p>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:70px">2024</div>
+        <div class="proj-body">
+          <h3>등록금심의위원회 학생위원</h3>
+          <p>숭실대학교 · 2024</p>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:70px">2023–24</div>
+        <div class="proj-body">
+          <h3>융합특성화자유전공학부 제6대 학생회장</h3>
+          <p>숭실대학교 · Jul 1, 2023 – Jun 30, 2024</p>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:70px">2023</div>
+        <div class="proj-body">
+          <h3>제63대 중앙운영위원회 위원</h3>
+          <p>숭실대학교 · Jul 1 – Dec 31, 2023</p>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-idx" style="min-width:70px">2023</div>
+        <div class="proj-body">
+          <h3>융합특성화자유전공학부 제5대 기획국원</h3>
+          <p>숭실대학교 · Mar 14 – Jun 30, 2023</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-note">© 2026 teo · built for coordinated disclosure</div>
+    <div class="foot-note">ttzero25.github.io</div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var root=document.documentElement, key='teo-theme';
+    var saved=null; try{saved=localStorage.getItem(key)}catch(e){}
+    if(saved==='dark'||saved==='light') root.setAttribute('data-theme',saved);
+    function current(){
+      var t=root.getAttribute('data-theme');
+      if(t) return t;
+      return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+    }
+    document.getElementById('themeToggle').addEventListener('click',function(){
+      var next=current()==='dark'?'light':'dark';
+      root.setAttribute('data-theme',next);
+      try{localStorage.setItem(key,next)}catch(e){}
+    });
+  })();
+</script>
+</body>
+</html>

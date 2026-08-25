@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — teo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <a class="brand" href="/"><span class="dot"></span>teo</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/blog.html" class="active">blog</a>
+      <a href="/cv.html">cv</a>
+      <a href="mailto:teo0studio@gmail.com">contact</a>
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+    </div>
+  </nav>
+</header>
+<main>
+  <section>
+    <div class="eyebrow">blog</div>
+    <div id="content"><p class="empty">Loading…</p></div>
+  </section>
+</main>
+<footer>
+  <span class="foot-note">© 2026 teo · built for coordinated disclosure</span>
+  <span class="foot-note">ttzero25.github.io</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  /* theme toggle */
+  (function(){var r=document.documentElement,k='teo-theme',s=null;try{s=localStorage.getItem(k)}catch(e){}if(s)r.setAttribute('data-theme',s);
+    function cur(){var t=r.getAttribute('data-theme');return t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}
+    document.getElementById('themeToggle').addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem(k,n)}catch(e){}});
+  })();
+
+  /* markdown blog: reads /posts/posts.json + /posts/<slug>.md, hash-routed */
+  var content=document.getElementById('content');
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function fmtDate(d){var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var p=String(d).split('-');return p.length===3?(m[+p[1]-1]+' '+(+p[2])+', '+p[0]):d}
+  var POSTS=[];
+  function renderList(){
+    if(!POSTS.length){content.innerHTML='<p class="empty">No posts yet.</p>';return}
+    var h='<ul class="post-list">';
+    POSTS.forEach(function(p){h+='<li><a href="#/'+encodeURIComponent(p.slug)+'"><span class="post-date mono">'+fmtDate(p.date)+'</span><span class="post-name">'+esc(p.title)+'</span></a></li>'});
+    content.innerHTML=h+'</ul>';
+  }
+  function renderPost(post,md){
+    content.innerHTML='<a class="back" href="#/">← all posts</a><h1 class="post-title">'+esc(post.title)+'</h1><p class="post-date mono">'+fmtDate(post.date)+'</p><div class="prose">'+marked.parse(md)+'</div>';
+    window.scrollTo(0,0);
+  }
+  function route(){
+    var h=location.hash.replace(/^#\/?/,'');
+    if(!h){renderList();return}
+    var slug=decodeURIComponent(h),post=POSTS.filter(function(p){return p.slug===slug})[0];
+    if(!post){renderList();return}
+    fetch('/posts/'+encodeURIComponent(slug)+'.md').then(function(r){return r.text()}).then(function(md){renderPost(post,md)}).catch(function(){content.innerHTML='<p class="empty">Failed to load post.</p>'});
+  }
+  fetch('/posts/posts.json').then(function(r){return r.json()}).then(function(list){
+    POSTS=(list||[]).slice().sort(function(a,b){return a.date<b.date?1:(a.date>b.date?-1:0)});route();
+  }).catch(function(){content.innerHTML='<p class="empty">No posts yet.</p>'});
+  window.addEventListener('hashchange',route);
+</script>
+</body>
+</html>

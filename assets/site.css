@@ -1,0 +1,54 @@
+:root{
+  --bg:#ffffff;--surface:#f7f8f9;--surface-2:#f1f2f4;--text:#18181b;--muted:#6b7280;--faint:#9ca3af;--border:#e6e7eb;--accent:#15a34a;--accent-soft:rgba(21,163,74,.10);
+}
+:root[data-theme="dark"]{--bg:#0b0b0d;--surface:#141417;--surface-2:#1a1a1e;--text:#ededf0;--muted:#9ca0aa;--faint:#6b7078;--border:#26262c;--accent:#4ade80;--accent-soft:rgba(74,222,128,.10);}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b0d;--surface:#141417;--surface-2:#1a1a1e;--text:#ededf0;--muted:#9ca0aa;--faint:#6b7078;--border:#26262c;--accent:#4ade80;--accent-soft:rgba(74,222,128,.10);}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.68;font-size:14.5px;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent-soft)}
+.mono{font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace}
+a{color:inherit;text-decoration:none}
+header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(12px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--border)}
+.nav{max-width:720px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:600;letter-spacing:-.01em;font-size:15px;display:flex;align-items:center;gap:8px}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.nav-links{display:flex;gap:20px;align-items:center;font-size:13.5px}
+.nav-links a{color:var(--muted);transition:color .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.theme-btn{border:1px solid var(--border);background:var(--surface);color:var(--muted);width:34px;height:34px;border-radius:9px;cursor:pointer;display:grid;place-items:center;font-size:15px;transition:.15s}
+.theme-btn:hover{color:var(--text);border-color:var(--faint)}
+main{max-width:720px;margin:0 auto;padding:0 24px;min-height:60vh}
+section,article{padding:52px 0}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:"//";opacity:.5}
+h1{font-size:clamp(25px,5vw,33px);font-weight:700;letter-spacing:-.03em;line-height:1.15}
+.lead{color:var(--muted);font-size:14.5px}
+.post-date{color:var(--faint);font-size:12.5px}
+.post-title{margin-bottom:8px}
+.post-list{list-style:none}
+.post-list li{border-top:1px solid var(--border)}
+.post-list li:first-child{border-top:none}
+.post-list a{display:flex;gap:16px;align-items:baseline;padding:16px 0;flex-wrap:wrap}
+.post-list a:hover .post-name{color:var(--accent)}
+.post-list .post-name{font-size:15px;font-weight:600}
+.post-list .post-date{min-width:96px}
+.empty{color:var(--muted);padding:8px 0}
+.prose{color:var(--text);font-size:15px;line-height:1.75;margin-top:20px}
+.prose>*+*{margin-top:16px}
+.prose h2{font-size:19px;font-weight:600;margin-top:32px;letter-spacing:-.01em}
+.prose h3{font-size:16px;font-weight:600;margin-top:24px}
+.prose a{color:var(--text);border-bottom:1px solid var(--accent)}
+.prose a:hover{background:var(--accent-soft)}
+.prose ul,.prose ol{padding-left:22px}
+.prose li{margin-top:6px}
+.prose code{font-family:'JetBrains Mono',monospace;font-size:.88em;background:var(--surface-2);padding:2px 6px;border-radius:5px}
+.prose pre{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;overflow-x:auto}
+.prose pre code{background:none;padding:0}
+.prose blockquote{border-left:3px solid var(--accent);padding-left:16px;color:var(--muted)}
+.prose img{max-width:100%;border-radius:8px}
+.prose hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:14px;transition:.15s}
+.back:hover{color:var(--accent)}
+footer{max-width:720px;margin:0 auto;padding:44px 24px 60px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.foot-note{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--faint)}
