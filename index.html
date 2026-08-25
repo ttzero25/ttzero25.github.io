@@ -161,10 +161,7 @@
   a.card.link-card:hover .chev{transform:translate(3px,-3px);color:var(--sevc,var(--accent))}
   .card.award-card{padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
   .card.award-card .medal{font-size:22px;line-height:1;flex-shrink:0}
-  .card::before{
-    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sevc,var(--accent));
-    opacity:.9;
-  }
+  .card::before{display:none}
   /* severity color system */
   .card.sv-crit{--sevc:#dc2626;--sevbg:rgba(220,38,38,.12)}
   .card.sv-high{--sevc:#ea580c;--sevbg:rgba(234,88,12,.12)}
