@@ -419,6 +419,34 @@
         </div>
       </details>
 
+      <details class="card sv-high">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">CVE-2026-68553</span>
+              <span class="sev-pill">High · 7.1</span>
+            </div>
+            <h3>coturn — format-string injection via TURN USERNAME/REALM into hiredis Redis command</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">An authenticated TURN user can inject printf-style format specifiers
+            (<span class="mono">%s</span>, <span class="mono">%x</span>, <span class="mono">%n</span>) through the
+            STUN USERNAME or REALM attributes: <span class="mono">is_secure_string()</span> blocks shell and SQL
+            metacharacters but never filters <span class="mono">%</span>. The tainted key is passed as a format
+            string to <span class="mono">redisAsyncCommand()</span> with too few variadic arguments across nine
+            call sites in <span class="mono">ns_ioalib_engine_impl.c</span>, reading past the
+            <span class="mono">va_list</span> — crashing the process (dropping all TURN sessions) or disclosing
+            stack memory into Redis. (CWE-134)</p>
+          <div class="tgt mono">coturn/coturn · hiredis backend → patched 4.13.0 · CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:H</div>
+          <div class="adv-links">
+            <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-68553" target="_blank" rel="noopener">NVD ↗</a>
+            <a href="https://github.com/coturn/coturn/security/advisories/GHSA-4g7c-p5wg-j4hp" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
       <details class="card sv-med">
         <summary>
           <div class="sum-main">
