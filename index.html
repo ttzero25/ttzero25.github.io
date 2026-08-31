@@ -483,6 +483,35 @@
         <summary>
           <div class="sum-main">
             <div class="card-top">
+              <span class="cve-id">CVE-2026-14368</span>
+              <span class="sev-pill">Medium · 5.4</span>
+            </div>
+            <h3>Zephyr — one-byte out-of-bounds write in LwM2M OMA-JSON string parser</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">An off-by-one boundary check in the legacy OMA-JSON content-format reader
+            (<span class="mono">lwm2m_rw_json.c</span>) uses <span class="mono">&gt;</span> instead of
+            <span class="mono">&gt;=</span> when validating string length against the destination buffer size.
+            A string whose length exactly equals the buffer is accepted, filled completely via
+            <span class="mono">memcpy</span>, then the NUL terminator is written one byte past the allocation.
+            A malicious or MITM'd LwM2M server issuing a crafted <span class="mono">Write</span> to a writable
+            string resource (e.g. Security Server URI, IPSO attributes) on clients built with
+            <span class="mono">CONFIG_LWM2M_RW_JSON_SUPPORT=y</span> corrupts adjacent static data — resource
+            corruption or a crash. (CWE-787 / CWE-193)</p>
+          <div class="tgt mono">zephyrproject-rtos/zephyr · &gt;= 3.2.0, &lt; 4.4.2 → patched 4.4.2 · CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:L</div>
+          <div class="adv-links">
+            <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-14368" target="_blank" rel="noopener">NVD ↗</a>
+            <a href="https://github.com/zephyrproject-rtos/zephyr/security/advisories/GHSA-vg53-h6qq-xx7h" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-med">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
               <span class="cve-id">CVE-2026-71325</span>
               <span class="sev-pill">Medium · 4.8</span>
             </div>
