@@ -190,6 +190,11 @@
     padding:2px 9px;border-radius:6px;text-transform:uppercase;white-space:nowrap;
     background:var(--sevbg);color:var(--sevc);border:1px solid color-mix(in srgb,var(--sevc) 30%,transparent);
   }
+  .cvss-ver{
+    font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.03em;
+    padding:2px 7px;border-radius:6px;white-space:nowrap;
+    background:var(--surface-2);color:var(--muted);border:1px solid var(--border);
+  }
   .card-top{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:9px}
   .cve-id{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:var(--sevc,var(--accent))}
   .badge{
@@ -363,6 +368,7 @@
             <div class="card-top">
               <span class="cve-id">CVE-2026-62336</span>
               <span class="sev-pill">High · 8.5</span>
+              <span class="cvss-ver">v4.0</span>
             </div>
             <h3>qbee-agent — local privilege escalation &amp; arbitrary file tampering via symlink following</h3>
           </div>
@@ -387,6 +393,7 @@
             <div class="card-top">
               <span class="cve-id">CVE-2026-65016</span>
               <span class="sev-pill">High · 7.7</span>
+              <span class="cvss-ver">v4.0</span>
             </div>
             <h3>n8n — SSO instance-role provisioning privilege escalation to instance owner</h3>
           </div>
@@ -411,6 +418,7 @@
             <div class="card-top">
               <span class="cve-id">CVE-2026-65981</span>
               <span class="sev-pill">High · 7.1</span>
+              <span class="cvss-ver">v3.1</span>
             </div>
             <h3>coturn — MOBILITY-TICKET session-resume authorization bypass</h3>
           </div>
@@ -435,6 +443,7 @@
             <div class="card-top">
               <span class="cve-id">CVE-2026-68553</span>
               <span class="sev-pill">High · 7.1</span>
+              <span class="cvss-ver">v3.1</span>
             </div>
             <h3>coturn — format-string injection via TURN USERNAME/REALM into hiredis Redis command</h3>
           </div>
@@ -463,6 +472,7 @@
             <div class="card-top">
               <span class="cve-id">CVE-2026-55828</span>
               <span class="sev-pill">Medium · 6.0</span>
+              <span class="cvss-ver">v4.0</span>
             </div>
             <h3>qbee transport — symlink-chain path traversal in tar extraction</h3>
           </div>
@@ -487,6 +497,7 @@
             <div class="card-top">
               <span class="cve-id">CVE-2026-14368</span>
               <span class="sev-pill">Medium · 5.4</span>
+              <span class="cvss-ver">v3.1</span>
             </div>
             <h3>Zephyr — one-byte out-of-bounds write in LwM2M OMA-JSON string parser</h3>
           </div>
@@ -516,6 +527,7 @@
             <div class="card-top">
               <span class="cve-id">CVE-2026-71325</span>
               <span class="sev-pill">Medium · 4.8</span>
+              <span class="cvss-ver">v4.0</span>
             </div>
             <h3>Traefik — <span class="mono">allowCrossNamespace=false</span> bypass via <span class="mono">@kubernetescrd</span></h3>
           </div>
