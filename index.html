@@ -573,6 +573,31 @@
         </div>
       </details>
 
+      <details class="card sv-crit">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">GHSA-x6pr-233j-x5cw</span>
+              <span class="sev-pill">Critical · 9.8</span>
+              <span class="cvss-ver">v3.1</span>
+            </div>
+            <h3>MONAI — remote code execution on federated-learning clients</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">The federated-learning client <span class="mono">MonaiAlgo</span> executes
+            server-provisioned bundle configuration during initialization. A malicious or compromised aggregation
+            server can supply a crafted <span class="mono">configs/train.json</span> or
+            <span class="mono">configs/logging.conf</span> and execute arbitrary code on every participating client
+            without user interaction. (CWE-94)</p>
+          <div class="tgt mono">monai (PyPI) · &gt;= 1.0.0 → patched &gt;= 1.6.1 · CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</div>
+          <div class="adv-links">
+            <a href="https://github.com/Project-MONAI/MONAI/security/advisories/GHSA-x6pr-233j-x5cw" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
     </div>
   </section>
 
