@@ -547,6 +547,32 @@
         </div>
       </details>
 
+      <details class="card sv-med">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">CVE-2026-18746</span>
+              <span class="sev-pill">Medium · 5.9</span>
+              <span class="cvss-ver">v3.1</span>
+            </div>
+            <h3>Zephyr — NULL pointer dereference in LwM2M Block1 context handling</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">When the static LwM2M Block1 context pool is exhausted,
+            <span class="mono">init_block_ctx()</span> leaves the context pointer as <span class="mono">NULL</span>,
+            but <span class="mono">parse_write_op()</span> dereferences it before checking the error result.
+            A remote peer able to reach the LwM2M socket can hold three incomplete block-wise writes and trigger
+            a fatal memory fault with a fourth request, crashing or resetting the device. (CWE-476)</p>
+          <div class="tgt mono">zephyrproject-rtos/zephyr · &gt;= 3.7.0, &lt; 4.3.2 / &gt;= 4.4.0, &lt; 4.5.0 → patched 4.3.2 / 4.5.0 · CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H</div>
+          <div class="adv-links">
+            <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-18746" target="_blank" rel="noopener">NVD ↗</a>
+            <a href="https://github.com/zephyrproject-rtos/zephyr/security/advisories/GHSA-4q9g-2mhh-m7w7" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
     </div>
   </section>
 
