@@ -171,6 +171,8 @@
   .card.sv-na  {--sevc:#6b7280;--sevbg:rgba(107,114,128,.13)}
   .card.sv-brand{--sevc:var(--accent);--sevbg:var(--accent-soft)}
   .card.sv-award{--sevc:#7c3aed;--sevbg:rgba(124,58,237,.13)}
+  #advisories .card.sv-crit{order:-2}
+  #advisories .card.sv-high{order:-1}
   :root[data-theme="dark"] .card.sv-award{--sevc:#a78bfa}
   @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .card.sv-award{--sevc:#a78bfa}}
   :root[data-theme="dark"] .card.sv-na  {--sevc:#9ca3af}
@@ -594,6 +596,103 @@
           <div class="tgt mono">monai (PyPI) · &gt;= 1.0.0 → patched &gt;= 1.6.1 · CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</div>
           <div class="adv-links">
             <a href="https://github.com/Project-MONAI/MONAI/security/advisories/GHSA-x6pr-233j-x5cw" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-high">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">GHSA-wvpx-5qmp-46g3</span>
+              <span class="sev-pill">High · 8.8</span>
+              <span class="cvss-ver">v3.1</span>
+            </div>
+            <h3>MONAI — arbitrary code execution via bundle <span class="mono">logging.conf</span></h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc"><span class="mono">ConfigWorkflow</span> passes a bundle's
+            <span class="mono">configs/logging.conf</span> to <span class="mono">logging.config.fileConfig()</span>,
+            which evaluates handler fields with <span class="mono">eval()</span>. A malicious bundle can therefore
+            execute arbitrary code when a victim loads or runs it. (CWE-94)</p>
+          <div class="tgt mono">monai (PyPI) · &gt;= 1.2.0 → patched 1.6.1 · CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H</div>
+          <div class="adv-links">
+            <a href="https://github.com/Project-MONAI/MONAI/security/advisories/GHSA-wvpx-5qmp-46g3" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-high">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">GHSA-2wx3-8x3w-r8qv</span>
+              <span class="sev-pill">High · 7.8</span>
+              <span class="cvss-ver">v3.1</span>
+            </div>
+            <h3>MONAI — arbitrary code execution in Auto3DSeg <span class="mono">algo_from_json()</span></h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">Auto3DSeg loads an untrusted <span class="mono">algo_object.json</span>, adds an
+            attacker-controlled directory to <span class="mono">sys.path</span>, and instantiates its
+            <span class="mono">_target_</span> class. A crafted work directory can execute arbitrary Python code
+            when loaded by <span class="mono">AutoRunner</span> or <span class="mono">import_bundle_algo_history</span>.
+            (CWE-470)</p>
+          <div class="tgt mono">monai (PyPI) · ≤ 1.6.0rc1 → patched ≥ 1.6.1 · CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H</div>
+          <div class="adv-links">
+            <a href="https://github.com/Project-MONAI/MONAI/security/advisories/GHSA-2wx3-8x3w-r8qv" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-high">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">GHSA-vm98-8c25-h274</span>
+              <span class="sev-pill">High · 8.5</span>
+              <span class="cvss-ver">v3.1</span>
+            </div>
+            <h3>Kyverno — NamespacedMutatingPolicy writes outside its namespace</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">A tenant allowed to create a <span class="mono">NamespacedMutatingPolicy</span> can
+            redirect mutate-existing targets into other namespaces or cluster-scoped resources. Kyverno's powerful
+            background-controller ServiceAccount performs the write without validating the target namespace or the
+            policy author's authorization, bypassing tenant isolation. (CWE-269 / CWE-284 / CWE-863)</p>
+          <div class="tgt mono">github.com/kyverno/kyverno · ≤ v1.18.2 → patched 1.19.2 · CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:L/I:H/A:N</div>
+          <div class="adv-links">
+            <a href="https://github.com/kyverno/kyverno/security/advisories/GHSA-vm98-8c25-h274" target="_blank" rel="noopener">GitHub Advisory ↗</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="card sv-crit">
+        <summary>
+          <div class="sum-main">
+            <div class="card-top">
+              <span class="cve-id">GHSA-g9p6-654w-mr9v</span>
+              <span class="sev-pill">Critical · 9.1</span>
+              <span class="cvss-ver">v3.1</span>
+            </div>
+            <h3>NATS Server — <span class="mono">no_auth_user</span> bypasses authorization callouts</h3>
+          </div>
+          <span class="chev">›</span>
+        </summary>
+        <div class="card-body">
+          <p class="desc">Before <span class="mono">CONNECT</span>, NATS Server could register the configured
+            <span class="mono">no_auth_user</span> without consulting the authorization callout. In deployments
+            combining these features, a connection rejected by normal authentication could be admitted with that
+            user's permissions. (CWE-863)</p>
+          <div class="tgt mono">github.com/nats-io/nats-server/v2 · ≤ 2.12.13 / ≤ 2.14.3 → patched 2.12.14 / 2.14.4 / 2.15.0 · CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N</div>
+          <div class="adv-links">
+            <a href="https://github.com/nats-io/nats-server/security/advisories/GHSA-g9p6-654w-mr9v" target="_blank" rel="noopener">GitHub Advisory ↗</a>
           </div>
         </div>
       </details>
